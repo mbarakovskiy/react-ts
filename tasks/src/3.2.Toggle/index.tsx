@@ -13,25 +13,39 @@ type ToggleProps = {
   onChange(value: boolean): void;
 };
 
-type ToggleState = {};
+type ToggleState = {
+    checked: boolean;
+};
 
 class Toggle extends React.Component<ToggleProps, ToggleState> {
-  // constructor(props: ToggleProps) {
-  // }
+    constructor(props: ToggleProps) {
+        super(props);
+        this.state = {
+            checked: false
+        };
+    }
 
-  render() {
-    const checked = true;
-    return (
-      <span className={'container' + (checked ? ' isChecked' : '')} onClick={this.handleClick}>
-        <span className="handle">
-          <div className="bg" />
-          <span className="hinge" />
+    render() {
+      const checked = this.state;
+      return (
+          <span className={'container' + (checked ? ' isChecked' : '')} onClick={this.handleClick}>
+            <span className="handle">
+                <div className="bg" />
+            <   span className="hinge" />
+            </span>
         </span>
-      </span>
-    );
+      );
   }
 
-  handleClick = () => {};
+    handleClick = () => {
+        const newChecked = !this.state.checked;
+        if (this.props.onChange) {
+            this.props.onChange(newChecked);
+        }
+        this.setState({
+            checked: newChecked
+        });
+    };
 }
 
 ReactDom.render(

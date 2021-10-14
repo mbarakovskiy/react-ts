@@ -11,7 +11,7 @@ let userName = 'По умолчанию';
 let mydom = (
   <div className="root">
     <div className="form">
-      <div style={{ paddingRight: '10px', display: 'inline-block' }}>
+      <div style={{ paddingRight: 10, display: 'inline-block' }}>
         <label htmlFor="name">Имя</label>
       </div>
       <input
@@ -20,7 +20,8 @@ let mydom = (
         size={39}
         onChange={event => {
           const target = event.target;
-          debugger;
+          //debugger;
+          userName = target.value;
         }}
         onBlur={() => alert(`userName: ${userName}`)}
       />

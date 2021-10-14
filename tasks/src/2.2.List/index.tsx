@@ -15,29 +15,33 @@ type Post = {
   author: string;
   time: string;
   message: string;
+  id: string;
 };
 
 const posts: Post[] = [
   {
     author: 'Парень не промах',
     time: '2 часа назад',
-    message: 'Попробую с удовольствием ;)'
+    message: 'Попробую с удовольствием ;)',
+      id: 'a'
   },
   {
     author: 'Милая девушка',
     time: '3 часа назад',
-    message: 'Можно использовать для выпекания чизкейков :)'
+    message: 'Можно использовать для выпекания чизкейков :)',
+      id: 'b'
   },
   {
     author: 'Скупец',
     time: 'вчера',
-    message: 'Цену-то загнули!'
+    message: 'Цену-то загнули!',
+      id: 'c'
   }
 ];
 
 function renderPost(post: Post) {
-  return (
-    <div className="post">
+    return (
+    <div key={post.id} className="post">
       <div className="postHeader">
         <span className="postAuthor">{post.author}</span>
         <br />
@@ -49,22 +53,18 @@ function renderPost(post: Post) {
 }
 
 function renderAuthors(posts: Post[]) {
+  const result = [];
+  for (const post of posts) {
+      result.push(<span key={post.id}>{post.author}</span>)
+    }
   return (
-    <div className="authors">
-      <span>{posts[0].author}</span>
-      <span>{posts[1].author}</span>
-      <span>{posts[2].author}</span>
-    </div>
+    <div className="authors">{result}</div>
   );
 }
 
 ReactDom.render(
   <div className="page">
-    <div className="posts">
-      {renderPost(posts[0])}
-      {renderPost(posts[1])}
-      {renderPost(posts[2])}
-    </div>
+    <div className="posts">{posts.map(post => renderPost(post))}</div>
     {renderAuthors(posts)}
   </div>,
   document.getElementById('app')

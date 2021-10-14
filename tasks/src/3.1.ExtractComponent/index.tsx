@@ -15,33 +15,30 @@ import './styles.css';
 
     4. Переделай компонент так, чтобы message передавался через props.children.
  */
-type Post = {
-  author: string;
+type PostProps = {
+  author?: string;
   time: string;
-  message: string;
 };
 
-function renderPost(post: Post) {
-  return (
-    <div className="post">
-      <div className="postHeader">
-        <span className="postAuthor">{post.author}</span>
-        <br />
-        <span className="postTime">{post.time}</span>
-      </div>
-      <div className="postMessage">{post.message}</div>
-    </div>
-  );
+const Post: FC<PostProps> = ({ author = '<Неизвестный автор>', time, children }) => {
+    return (
+        <div className="post">
+            <div className="postHeader">
+                <span className="postAuthor">{author}</span>
+                <br />
+                <span className="postTime">{time}</span>
+            </div>
+            <div className="postMessage">{children}</div>
+        </div>
+    );
 }
+
 
 ReactDom.render(
   <div className="page">
     <div className="posts">
-      {renderPost({
-        author: 'Милая девушка',
-        time: '3 часа назад',
-        message: 'Можно использовать для выпекания чизкейков :)'
-      })}
+        <Post author={'Милая девушка'} time={'3 часа назад'}>Можно использовать для выпекания чизкейков :)</Post>
+        <Post time={'2 часа назад'}>Грише запретили въезд в Азербайджан</Post>
     </div>
   </div>,
   document.getElementById('app')
