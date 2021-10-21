@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import ReactDom from 'react-dom';
 import './styles.css';
 
@@ -11,81 +11,50 @@ import './styles.css';
     Список хуков, которые могут пригодиться: useState, useRef, useEffect
  */
 
-type AppState = {
-  blockIds: number[];
-};
+function App() {
+  const lastBlockId = useRef(0);
+  const [blockIds, setBlockIds] = useState<number[]>([]);
 
-class App extends React.Component<{}, AppState> {
-  private lastBlockId = 0;
-
-  constructor(props: {}) {
-    super(props);
-    this.state = {
-      blockIds: []
-    };
-  }
-
-  addNew = () => {
-    this.lastBlockId++;
-    this.setState({
-      blockIds: [...this.state.blockIds, this.lastBlockId]
-    });
+  const addNew = () => {
+    lastBlockId.current++;
+    setBlockIds(ids => [...ids, lastBlockId.current]);
   };
 
-  removeLast = () => {
-    this.setState({
-      blockIds: this.state.blockIds.slice(0, this.state.blockIds.length - 1)
-    });
+  const removeLast = () => {
+    setBlockIds(ids => ids.slice(0, blockIds.length - 1));
   };
 
-  render() {
-    return (
+  return (
       <div className="page">
         <div className="controlPanel">
-          <button type="button" onClick={this.removeLast} className="actionButton">
+          <button type="button" onClick={removeLast} className="actionButton">
             -
           </button>
-          <button type="button" onClick={this.addNew} className="actionButton">
+          <button type="button" onClick={addNew} className="actionButton">
             +
           </button>
         </div>
         <div className="container">
-          {this.state.blockIds.map(blockId => (
-            <CounterBlock key={blockId} />
+          {blockIds.map(blockId => (
+              <CounterBlock key={blockId} />
           ))}
         </div>
       </div>
-    );
-  }
+  );
 }
 
-type CounterBlockProps = {
-  value: number;
-};
+function CounterBlock() {
+  const [value, setValue] = useState(0);
+  const timer = useRef<number | undefined>();
 
-class CounterBlock extends React.Component<{}, CounterBlockProps> {
-  private timer?: number;
-
-  constructor(props: {}) {
-    super(props);
-    this.state = {
-      value: 0
+  useEffect(() => {
+    timer.current = window.setInterval(() => setValue(value => value + 1), 1000);
+    return () => {
+      window.clearInterval(timer.current);
     };
-  }
+  }, []);
 
-  componentDidMount() {
-    this.timer = window.setInterval(() => {
-      this.setState({ value: this.state.value + 1 });
-    }, 1000);
-  }
-
-  componentWillUnmount() {
-    window.clearInterval(this.timer);
-  }
-
-  render() {
-    return <div className="block">{this.state.value}</div>;
-  }
+  return <div className="block">{value}</div>;
 }
 
 ReactDom.render(<App />, document.getElementById('app'));

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {FC} from 'react';
 import ReactDom from 'react-dom';
 import './styles.css';
 
@@ -10,7 +10,20 @@ import './styles.css';
 
 const RUBLES_IN_ONE_EURO = 70;
 
-class MoneyConverter extends React.Component {
+type MoneyConverterState = {
+  valueInRubles: number;
+  valueInEuros: number;
+};
+
+class MoneyConverter extends React.Component<{}, MoneyConverterState> {
+  constructor(props: {}) {
+    super(props);
+    this.state = {
+      valueInRubles: 0,
+      valueInEuros: 0
+    };
+  }
+
   render() {
     return (
       <div className="root">
@@ -18,40 +31,42 @@ class MoneyConverter extends React.Component {
           <h2>Конвертер валют</h2>
           <div>
             <span>&#8381;</span>
-            <Money />
+            <Money value={this.state.valueInRubles} onChange={this.handleChangeRubles} />
             &mdash;
-            <Money />
+            <Money value={this.state.valueInEuros} onChange={this.handleChangeEuros} />
             <span>&euro;</span>
           </div>
         </div>
       </div>
     );
   }
-}
 
-type MoneyProps = {};
+  handleChangeRubles = (value: number) => {
+    this.setState({
+      valueInRubles: value,
+      valueInEuros: Math.round((100 * value) / RUBLES_IN_ONE_EURO) / 100
+    });
+  };
 
-type MoneyState = {
-  value: number;
-};
-
-class Money extends React.Component<MoneyProps, MoneyState> {
-  constructor(props: MoneyProps) {
-    super(props);
-    this.state = {
-      value: 0
-    };
-  }
-
-  render() {
-    return <input type="text" value={this.state.value} onChange={this.handleChangeValue} />;
-  }
-
-  handleChangeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = extractNumberString(event.target.value);
-    this.setState({ value });
+  handleChangeEuros = (value: number) => {
+    this.setState({
+      valueInRubles: Math.round(100 * value * RUBLES_IN_ONE_EURO) / 100,
+      valueInEuros: value
+    });
   };
 }
+
+type MoneyProps = {
+  value: number;
+  onChange(value: number): void;
+};
+const Money: FC<MoneyProps> = ({ value, onChange }) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(extractNumberString(event.target.value));
+  };
+
+  return <input type="text" value={value} onChange={handleChange} />;
+};
 
 function extractNumberString(value: string): number {
   const str = value.replace(/^0+/g, '').replace(/[^.0-9]/g, '');

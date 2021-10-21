@@ -43,11 +43,27 @@ type TimeDisplayState = {
 };
 
 class TimeDisplay extends React.Component<{}, TimeDisplayState> {
+  private intervalId: number | null = null;
   constructor(props: {}) {
     super(props);
     this.state = {
       localTime: new Date()
     };
+  }
+  componentDidMount() {
+    this.intervalId = window.setInterval(() =>
+    {
+      console.log('tick');
+      this.setState( {
+        localTime: new Date()
+      });
+    }, 1000);
+  }
+  componentWillUnmount() {
+    if (this.intervalId) {
+      window.clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
   }
 
   render() {

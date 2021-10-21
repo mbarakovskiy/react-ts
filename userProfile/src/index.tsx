@@ -1,4 +1,7 @@
+import React from 'react';
+import ReactDom from 'react-dom';
 import './style.css';
+import { Button, Gapped } from '@skbkontur/react-ui';
 
 /**
  *  Итак, перед тобой пустой проект. Давай его чем-то заполним. Не стесняйся подсматривать в уже сделанные задачи,
@@ -56,4 +59,15 @@ import './style.css';
  *      Придумай, как избежать излишнего дублирования.
  */
 
+ReactDom.render(
+    <form>
+        <div className="class">
+            <label htmlFor="hello">HelloWorld</label>
+        </div>
+        <div>
+            Click this button <Button onClick={() => console.log('Hey!')}>Click me</Button>
+        </div>
+    </form>,
+    document.getElementById('tygydyk')
+);
 console.log('Hi from script!');

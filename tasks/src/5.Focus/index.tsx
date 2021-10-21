@@ -18,21 +18,24 @@ type InputFormRowProps = React.InputHTMLAttributes<HTMLInputElement> & {
 };
 
 class InputFormRow extends React.Component<InputFormRowProps> {
-  constructor(props: InputFormRowProps) {
+    myRef: React.RefObject<HTMLInputElement> = React.createRef();
+    constructor(props: InputFormRowProps) {
     super(props);
   }
 
   render() {
     const { label, ...rest } = this.props;
     return (
-      <div className="row" onClick={this.handleClick}>
+      <div className="row pointer" onClick={this.handleClick}>
         <div className="label">{label}</div>
-        <input {...rest} />
+        <input ref={this.myRef} {...rest} />
       </div>
     );
   }
 
-  handleClick = () => {};
+    handleClick = () => {
+        this.myRef.current?.focus?.();
+    };
 }
 
 ReactDom.render(
