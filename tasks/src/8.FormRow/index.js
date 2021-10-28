@@ -40,6 +40,39 @@ import Toggle from './Toggle';
        для всех возможных WrappedComponent, с которыми будет использоваться HOC.
  */
 
+function createFormRow (WrappedComponent) {
+  class FormRow extends React.Component {
+    constructor(props) {
+      super(props);
+    }
+
+    render() {
+      const { label, forwardedRef, ...rest } = this.props;
+      return (
+          <div className="row">
+            <div className="label">{label}</div>
+            <WrappedComponent ref={forwardedRef} {...rest} />
+          </div>
+      );
+    }
+  }
+
+  FormRow.propTypes = {
+    label: PropTypes.string.isRequired,
+    forwardedRef: PropTypes.object
+  };
+
+  const wrappedName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
+  FormRow.displayName = `FormRow(${wrappedName})`;
+
+  const forward = (props, ref) => <FormRow {...props} forwardedRef={ref} />;
+  forward.displayName = FormRow.displayName;
+  return React.forwardRef(forward);
+}
+
+const InputFormRow = createFormRow(Input);
+const ToggleFormRow = createFormRow(Toggle);
+
 class Form extends React.Component {
   constructor() {
     super();
@@ -118,45 +151,7 @@ Form.propTypes = {
   user: PropTypes.object
 };
 
-class InputFormRow extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
-  render() {
-    const { label, ...rest } = this.props;
-    return (
-      <div className="row">
-        <div className="label">{label}</div>
-        <Input {...rest} />
-      </div>
-    );
-  }
-}
-
-InputFormRow.propTypes = {
-  label: PropTypes.string.isRequired
-};
-
-class ToggleFormRow extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    const { label, ...rest } = this.props;
-    return (
-      <div className="row">
-        <div className="label">{label}</div>
-        <Toggle {...rest} />
-      </div>
-    );
-  }
-}
-
-ToggleFormRow.propTypes = {
-  label: PropTypes.string.isRequired
-};
 
 ReactDom.render(<Form />, document.getElementById('app'));
 
